@@ -1,22 +1,13 @@
 from fastapi import FastAPI
-from ariadne import gql, make_executable_schema, load_schema_from_path
 from ariadne.asgi import GraphQL
+from app.schema import schema
 
-from app.api.resolvers import query, mutation
+app = FastAPI(
+    title="EmQu Knowledge API",
+    description="Gestor de conocimientos técnicos para EmQu",
+    version="1.0.0"
+)
 
-# Carga esquema desde un archivo .graphql o directo en string
-type_defs = gql("""
-    type Query {
-        hello: String!
-    }
-    type Mutation {
-        dummy: String
-    }
-""")
+graphql_app = GraphQL(schema, debug=True)
 
-schema = make_executable_schema(type_defs, query, mutation)
-
-app = FastAPI()
-
-# Monta la ruta /graphql con GraphQL Playground habilitado
-app.add_route("/graphql", GraphQL(schema, debug=True))
+app.mount("/graphql", graphql_app)
