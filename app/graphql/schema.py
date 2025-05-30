@@ -8,10 +8,12 @@ from app.graphql.topics.mutations import CreateTopic
 
 # Consultas
 from app.graphql.articles.queries import ArticleQueries
+from app.graphql.statistics.queries import StatisticsQueries
 
 @strawberry.type
 class Query(
     ArticleQueries,
+    StatisticsQueries
 ):
     pass
 
