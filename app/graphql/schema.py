@@ -1,13 +1,13 @@
 import strawberry
 from app.graphql.users.mutations import UserMutation
+from app.graphql.articles.mutations import CreateArticle, UpdateArticle, DeleteArticle
 
 @strawberry.type
 class Query:
-    # Puedes poner un ejemplo o dejarlo vacío
     hello: str = "Hola mundo"
 
 @strawberry.type
-class Mutation(UserMutation):
+class Mutation(UserMutation, CreateArticle, UpdateArticle, DeleteArticle):
     pass
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)

@@ -8,3 +8,8 @@ class UserType:
     email: str
     role: str
     created_at: datetime 
+
+@strawberry.type
+class LoginResponseType:
+    access_token: str
+    token_type: str
