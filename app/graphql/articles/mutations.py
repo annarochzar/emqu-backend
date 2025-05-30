@@ -10,6 +10,8 @@ from app.config.database import async_session
 from app.graphql.articles.types import ArticleType
 from app.dependencies.auth import get_current_user
 from app.models import UserModel
+from sqlalchemy import select
+
 
 @strawberry.input
 class CreateArticleInput:
@@ -35,15 +37,16 @@ class CreateArticle:
 
             # Agregar temas
             topics = await session.execute(
-                TopicModel.__table__.select().where(TopicModel.id.in_(data.topic_ids))
+                select(TopicModel).where(TopicModel.id.in_(data.topic_ids))
             )
             new_article.topics = topics.scalars().all()
 
             # Agregar etiquetas
-            tags = await session.execute(
-                TagModel.__table__.select().where(TagModel.id.in_(data.tag_ids))
+            tags_result = await session.execute(
+                select(TagModel).where(TagModel.id.in_(data.tag_ids))
             )
-            new_article.tags = tags.scalars().all()
+            new_article.tags = tags_result.scalars().all()
+
 
             session.add(new_article)
             await session.commit()
@@ -78,15 +81,16 @@ class UpdateArticle:
             article.content = data.content
 
             # Actualizar relaciones
-            new_topics = await session.execute(
-                TopicModel.__table__.select().where(TopicModel.id.in_(data.topic_ids))
+            new_topics_result = await session.execute(
+                select(TopicModel).where(TopicModel.id.in_(data.topic_ids))
             )
-            article.topics = new_topics.scalars().all()
+            article.topics = new_topics_result.scalars().all()
 
-            new_tags = await session.execute(
-                TagModel.__table__.select().where(TagModel.id.in_(data.tag_ids))
+            new_tags_result = await session.execute(
+                select(TagModel).where(TagModel.id.in_(data.tag_ids))
             )
-            article.tags = new_tags.scalars().all()
+            article.tags = new_tags_result.scalars().all()
+
 
             await session.commit()
             await session.refresh(article)

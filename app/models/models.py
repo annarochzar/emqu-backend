@@ -35,6 +35,7 @@ class ArticleModel(Base):
     content = Column(Text, nullable=False)
     date = Column(DateTime, default=datetime.utcnow)
     author_id = Column(Integer, ForeignKey("users.id"))
+    created_at = Column(DateTime, default=datetime.utcnow)
     
     author = relationship(
         "UserModel", 
