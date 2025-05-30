@@ -1,13 +1,8 @@
 from fastapi import FastAPI
-from ariadne.asgi import GraphQL
-from app.schema import schema
+from strawberry.fastapi import GraphQLRouter
+from app.graphql.schema import schema
 
-app = FastAPI(
-    title="EmQu Knowledge API",
-    description="Gestor de conocimientos técnicos para EmQu",
-    version="1.0.0"
-)
+app = FastAPI()
 
-graphql_app = GraphQL(schema, debug=True)
-
-app.mount("/graphql", graphql_app)
+graphql_app = GraphQLRouter(schema)
+app.include_router(graphql_app, prefix="/graphql")
